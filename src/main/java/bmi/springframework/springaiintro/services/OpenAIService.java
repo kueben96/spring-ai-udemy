@@ -2,11 +2,14 @@ package bmi.springframework.springaiintro.services;
 
 import bmi.springframework.springaiintro.model.Answer;
 import bmi.springframework.springaiintro.model.GetCapitalRequest;
+import bmi.springframework.springaiintro.model.GetCapitalResponse;
 import bmi.springframework.springaiintro.model.Question;
 
 public interface OpenAIService {
 
-    Answer getCapital(GetCapitalRequest capitalRequest);
+//    Answer getCapital(GetCapitalRequest capitalRequest);
+
+    GetCapitalResponse getCapital(GetCapitalRequest capitalRequest);
 
     Answer getCapitalWithInfo(GetCapitalRequest capitalRequest);
 

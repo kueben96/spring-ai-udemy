@@ -2,9 +2,8 @@ package bmi.springframework.springaiintro.services;
 
 import bmi.springframework.springaiintro.model.Answer;
 import bmi.springframework.springaiintro.model.GetCapitalRequest;
+import bmi.springframework.springaiintro.model.GetCapitalResponse;
 import bmi.springframework.springaiintro.model.Question;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
@@ -12,6 +11,7 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -55,22 +55,19 @@ public class OpenAIServiceImpl implements OpenAIService {
     }
 
     @Override
-    public Answer getCapital(GetCapitalRequest capitalRequest) {
+    public GetCapitalResponse getCapital(GetCapitalRequest capitalRequest) {
+        BeanOutputConverter<GetCapitalResponse> parser = new BeanOutputConverter<>(GetCapitalResponse.class);
+        String format = parser.getFormat();
+        System.out.println("format: \n " + format);
 //        PromptTemplate promptTemplate = new PromptTemplate("what is the capital of " + capitalRequest.stateOrCountry() +"?");
         PromptTemplate promptTemplate = new PromptTemplate(getCapitalPrompt);
-        Prompt prompt = promptTemplate.create(Map.of("stateOrCountry", capitalRequest.stateOrCountry()));
+        Prompt prompt = promptTemplate.create(Map.of("stateOrCountry", capitalRequest.stateOrCountry(), "format", format));
         ChatResponse response = chatModel.call(prompt);
 
         System.out.println("raw response" + response.getResult().getOutput().getText());
 
-        String responseString;
-        try {
-            JsonNode jsonNode = objectMapper.readTree(response.getResult().getOutput().getText());
-            responseString = jsonNode.get("answer").asText();
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        return new Answer(responseString);
+        return parser.convert(response.getResult().getOutput().getText());
+//        return new GetCapitalResponse(responseString);
 //        return new Answer(response.getResult().getOutput().getText());
     }
 
