@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "my.openai.model2",
+      "type": "java.lang.String",
+      "description": "Description for my.openai.model2."
+    }
+  ]
+}
