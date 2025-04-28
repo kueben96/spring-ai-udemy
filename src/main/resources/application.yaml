@@ -1,0 +1,37 @@
+logging:
+  level:
+    org:
+      springframework:
+        ai:
+          chat:
+            client:
+              advisor: DEBUG
+          nodeValue: DEBUG
+        web:
+          client:
+            RestTemplate: DEBUG
+            nodeValue: DEBUG
+spring:
+  application:
+    name: spring-ai-intro
+  ai:
+    openai:
+      chat:
+        options:
+          model: Qwen2.5-7B-Instruct-1M
+      api-key: ${OPENAI_API_KEY}
+      base-url: ${BASE_URL}
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: myGroup
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: localhost:9042
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+my:
+  openai:
+    model2: Qwen2.5-7B-Instruct-1M
